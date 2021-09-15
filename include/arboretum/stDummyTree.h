@@ -365,7 +365,6 @@ class stDummyTree: public stMetricTree<ObjectType, EvaluatorType>{
           bridgeList = new tResult();
           bridgeList->SetQueryInfo(sample->Clone(), KNEARESTQUERY, 0, 0.0, false);
           bridgeList->AddPair( ((ObjectType *) (*globalNN)[0].GetObject())->Clone(), (*globalNN)[0].GetDistance() );
-          //std::cout << "cabeca da lista " <<  ((ObjectType *) (*globalNN)[0].GetObject())->getOID() << "-" << (*globalNN)[0].GetDistance() << std::endl;
           answer.push_back(bridgeList);
 
           //Examine every other (sorted) candidate
@@ -378,12 +377,8 @@ class stDummyTree: public stMetricTree<ObjectType, EvaluatorType>{
 
               //Build the strong influence sets
               for (size_t i = 0; i < answer.size(); i++){
-//                  std::cout << "influente " <<
-//                               ((ObjectType *) (*answer.at(i))[0].GetObject())->getOID()  << " candidato " <<
-//                               ((ObjectType *) (*globalNN)[j].GetObject())->getOID() << "-" << std::endl;
                   double dOiOj =  this->myMetricEvaluator->GetDistance((ObjectType *) (*answer.at(i))[0].GetObject(), (ObjectType *) (*globalNN)[j].GetObject());
                   double dOiOq = this->myMetricEvaluator->GetDistance(sample, (ObjectType *) (ObjectType *) (*answer.at(i))[0].GetObject());
-                  //std::cout << "dOjOq " << dOjOq << " dOiOj " << dOiOj << " dOiOq " << dOiOq << std::endl;
                   if ( ((1/dOiOj) >= (1/dOiOq)) && ((1/dOiOj) >= (1/dOjOq))){ //Second condition for sanity check
                       influenced = true;
                       if (minDistToInfluent > dOiOj){
@@ -394,7 +389,6 @@ class stDummyTree: public stMetricTree<ObjectType, EvaluatorType>{
               }
 
               if (!influenced){
-                  //std::cout << "novo ifluente!" << ((ObjectType *) (*globalNN)[j].GetObject())->getOID() << "-" << std::endl;
                   if (answer.size() == k){
                       //Force break
                       break;
@@ -405,8 +399,6 @@ class stDummyTree: public stMetricTree<ObjectType, EvaluatorType>{
                       answer.push_back(bridgeList);
                   }
               } else {
-                  //std::cout << "novo influenciado!" << ((ObjectType *) (*globalNN)[j].GetObject())->getOID() << "para influente "
-                  //          <<  ((ObjectType *) (*answer.at(closestInfluent))[0].GetObject())->getOID() <<  "-" << std::endl;
                   bridgeList = answer[closestInfluent];
                   bridgeList->SetQueryInfo(sample->Clone(), KNEARESTQUERY, 0, 0.0, false);
                   bridgeList->AddPair( ((ObjectType *) (*globalNN)[j].GetObject())->Clone(), minDistToInfluent+dOjOq);
